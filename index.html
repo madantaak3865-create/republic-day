@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Forever With You ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html,body{
+ margin:0;
+ padding:0;
+ height:100%;
+ overflow:hidden;
+ background:radial-gradient(circle at top,#0b0b15 0%,#000 70%);
+ font-family:'Segoe UI',sans-serif;
+ color:white;
+}
+
+/* Night sky */
+.sky{
+ position:fixed;
+ inset:0;
+ background:
+  radial-gradient(circle at 20% 20%,#fff 1px,transparent 3px),
+  radial-gradient(circle at 70% 25%,#fff 1.5px,transparent 3px),
+  radial-gradient(circle at 40% 10%,#fff 1px,transparent 3px);
+ z-index:0;
+}
+.moon{
+ position:absolute;
+ top:40px;
+ left:60px;
+ width:90px;
+ height:90px;
+ border-radius:50%;
+ background:#f5f5f5;
+ box-shadow:0 0 40px #fff;
+}
+
+/* Canvas */
+#canvas{
+ position:fixed;
+ inset:0;
+ z-index:1;
+}
+
+/* Content */
+.container{
+ position:relative;
+ z-index:2;
+ max-width:700px;
+ margin:auto;
+ text-align:center;
+ padding:20px;
+}
+
+/* Heart beat */
+.heart{
+ font-size:80px;
+ animation:beat 0.3s infinite;
+}
+@keyframes beat{
+ 0%{transform:scale(1)}
+ 50%{transform:scale(1.7)}
+ 100%{transform:scale(1)}
+}
+
+/* Glowing name */
+.glow{
+ font-size:44px;
+ font-weight:bold;
+ color:#ff69b4;
+ text-shadow:
+  0 0 10px #ff69b4,
+  0 0 30px #ff1493,
+  0 0 60px #ff1493;
+ animation:glow 1.5s infinite alternate;
+}
+@keyframes glow{
+ from{opacity:0.8}
+ to{opacity:1}
+}
+
+/* Shayari */
+p{
+ font-size:18px;
+ line-height:2;
+ margin:15px 0;
+}
+
+/* Buttons */
+button{
+ padding:12px 38px;
+ margin:10px;
+ font-size:18px;
+ border:none;
+ border-radius:30px;
+ cursor:pointer;
+}
+.yes{background:#ff2f92;color:white;}
+.no{background:#444;color:white;}
+</style>
+</head>
+
+<body>
+
+<div class="sky">
+ <div class="moon"></div>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<div class="container" id="content">
+ <div class="heart">❤️</div>
+
+ <h1>I Love You <span class="glow">Meri Katto</span></h1>
+
+ <p>
+  🌹 Tum meri har dua ka jawaab ho  
+  Tumhari muskaan meri har thakaan mita deti hai ✨  
+  Main tumhe sirf aaj nahi,  
+  har kal, har janam, har saans mein chahta hoon 💞  
+ </p>
+
+ <p>
+  💌 Agar zindagi ek kitaab hoti,  
+  toh har safhe par sirf tumhara naam hota ❤️  
+ </p>
+
+ <p>
+  💍 <b>Kya tum mujhe hamesha ke liye accept karogi?</b>
+ </p>
+
+ <button class="yes" onclick="yesClicked()">YES ❤️</button>
+ <button class="no" onclick="alert('Soch lo dobara 😔')">NO</button>
+</div>
+
+<script>
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let particles=[];
+let flowers=[];
+
+function r(a,b){return Math.random()*(b-a)+a}
+
+/* Fireworks */
+function firework(x,y){
+ for(let i=0;i<200;i++){
+  particles.push({
+   x,y,
+   dx:r(-6,6),
+   dy:r(-6,6),
+   life:120,
+   size:r(1,3),
+   color:`hsl(${Math.random()*360},100%,60%)`
+  });
+ }
+}
+
+/* Flower rain */
+function flower(){
+ flowers.push({
+  x:r(0,canvas.width),
+  y:-10,
+  size:r(10,18),
+  speed:r(2,5),
+  alpha:1
+ });
+}
+
+function animate(){
+ requestAnimationFrame(animate);
+ ctx.fillStyle="rgba(0,0,0,0.25)";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ particles.forEach((p,i)=>{
+  p.x+=p.dx;
+  p.y+=p.dy;
+  p.life--;
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+  ctx.fillStyle=p.color;
+  ctx.fill();
+  if(p.life<=0)particles.splice(i,1);
+ });
+
+ flowers.forEach((f,i)=>{
+  f.y+=f.speed;
+  ctx.font=`${f.size}px serif`;
+  ctx.globalAlpha=f.alpha;
+  ctx.fillText("🌸",f.x,f.y);
+  ctx.globalAlpha=1;
+  if(f.y>canvas.height)flowers.splice(i,1);
+ });
+}
+
+/* YES action */
+function yesClicked(){
+ document.getElementById("content").innerHTML=
+ "<h1>She Said YES ❤️</h1>"+
+ "<h2 class='glow'>Meri Katto ✨</h2>"+
+ "<p>Forever & Always 💞</p>";
+
+ setInterval(()=>firework(r(100,canvas.width-100),r(50,canvas.height/2)),500);
+ setInterval(flower,120);
+ animate();
+}
+</script>
+
+</body>
+</html>
